@@ -2,6 +2,7 @@
 通过 Ollama API 调用模型
 官方仓库 https://github.com/ollama/ollama-python
 菜鸟教程 https://www.runoob.com/ollama/ollama-python-sdk.html
+可用模型列表 https://ollama.com/search
 '''
 
 from ollama import chat
