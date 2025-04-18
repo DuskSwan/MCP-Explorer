@@ -1,3 +1,9 @@
+'''
+谷歌Gemini API 示例代码
+API获取见 https://aistudio.google.com/apikey
+模型价格见 https://aistudio.google.com/plan_information
+'''
+
 from google import genai
 import os
 import dotenv
