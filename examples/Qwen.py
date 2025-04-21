@@ -21,7 +21,7 @@ try:
 
     completion = client.chat.completions.create(
         # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
-        model="qwen-plus",
+        model="qwen2.5-3b-instruct",
         messages=[
             {'role': 'system', 'content': 'You are a helpful assistant.'},
             {'role': 'user', 'content': '你是谁？'}
@@ -32,17 +32,37 @@ except Exception as e:
     print(f"错误信息：{e}")
     print("请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code")
 
-# client = OpenAI(
-#     api_key=DASHSCOPE_API_KEY,
-#     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-# )
-
-# completion = client.chat.completions.create(
-#     # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
-#     model="qwen-plus",
-#     messages=[
-#         {'role': 'system', 'content': 'You are a helpful assistant.'},
-#         {'role': 'user', 'content': '你是谁？'}
-#         ]
-# )
-# print(completion.choices[0].message.content)
+'''
+回复结构：
+ChatCompletion(
+    id='chatcmpl-47bdf91a-960b-94cc-a9d1-ce9ca1b1c086', 
+    choices=[
+        Choice(
+            finish_reason='stop', 
+            index=0, 
+            logprobs=None, 
+            message=ChatCompletionMessage(
+                content='我是Qwen，由阿里云开发的预训练语言模型。我被设计用来生成各种各样的文本，包括回答问题、创作故事、编写代码等等。有什么我可以帮助你的吗？如果你有任何问题或需要帮助的地方，请尽管告诉我！', 
+                refusal=None, 
+                role='assistant', 
+                annotations=None, 
+                audio=None, 
+                function_call=None, 
+                tool_calls=None
+            )
+        )
+    ], 
+    created=1745200371, 
+    model='qwen2.5-3b-instruct', 
+    object='chat.completion', 
+    service_tier=None, 
+    system_fingerprint=None, 
+    usage=CompletionUsage(
+        completion_tokens=52, 
+        prompt_tokens=22, 
+        total_tokens=74, 
+        completion_tokens_details=None, 
+        prompt_tokens_details=None
+    )
+)
+'''
