@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 load_dotenv()
 DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
 
-print(f"DASHSCOPE_API_KEY: {DASHSCOPE_API_KEY}")
 
 try:
     client = OpenAI(
