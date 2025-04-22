@@ -43,9 +43,9 @@ pip install openai
 
 ## 结构说明
 
-example下是各个模型的调用方法。
+tests下是各个模型的调用方法测试。
 
-server下是我自己写的MCP server脚本。
+servers下是我自己写的MCP server脚本。
 
 client下是我自己写的MCP client，是主要运行的部分。
 
