@@ -1,4 +1,10 @@
-.venv
-.env
+# env
+**/.env
+**/.venv/
 
-.vscode
+# editor
+**/.vscode
+
+# python
+**/__pycache__/
+**/*.pyc
