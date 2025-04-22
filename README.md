@@ -43,10 +43,10 @@ pip install openai
 
 ## 结构说明
 
-tests下是各个模型的调用方法测试。
+host.py 是我为自己搭建的MCP host，里面实际上是一个Client负责接入本地（将来或许支持远端）的Server。
 
-servers下是我自己写的MCP server脚本。
+LLM_examples下是各个模型的调用方法。
 
-client下是我自己写的MCP client，是主要运行的部分。
+my_servers下是我自己写的MCP server脚本。
 
-
+client_examples下是MCP client的示例。
