@@ -41,8 +41,12 @@ pip install ollama
 pip install openai
 ```
 
-## 参考
+## 结构说明
 
-[Gemini API 使用入门](https://ai.google.dev/gemini-api/docs/text-generation?hl=zh-cn)
+example下是各个模型的调用方法。
 
-[Ollama Python 使用](https://www.runoob.com/ollama/ollama-python-sdk.html)
+server下是我自己写的MCP server脚本。
+
+client下是我自己写的MCP client，是主要运行的部分。
+
+

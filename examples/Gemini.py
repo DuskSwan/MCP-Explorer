@@ -2,6 +2,7 @@
 谷歌Gemini API 示例代码
 API获取见 https://aistudio.google.com/apikey
 模型价格见 https://aistudio.google.com/plan_information
+Gemini API 使用入门 https://ai.google.dev/gemini-api/docs/text-generation?hl=zh-cn
 '''
 
 from google import genai
