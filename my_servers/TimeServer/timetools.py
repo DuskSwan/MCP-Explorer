@@ -29,10 +29,10 @@ def get_time():
     获取当前时间
 
     Returns:
-        str: 当前时间字符串
+        str: 当前时间字符串 (ISO 8601 格式)
     """
-    timestamp = datetime.now().timestamp()
-    return str(timestamp)
+    current_time = datetime.now().isoformat()
+    return current_time
 
 @mcp.tool()
 def transform_timezone(source_time: str, timezone: str) -> str:
@@ -40,9 +40,9 @@ def transform_timezone(source_time: str, timezone: str) -> str:
     将源时间转换为指定时区的时间
 
     Args:
-        source_time (str): 源时间字符串,格式为 ISO 8601
-        例如: "2023-10-01T12:00:00+00:00"
-        timezone (str): 时区字符串,格式为 ISO 8601
+        source_time (str): 源时间字符串,格式为 ISO 8601，例如: "2023-10-01T12:00:00+00:00"
+        timezone (str): 时区字符串,例如 "Asia/Shanghai" 或 "America/New_York"，可用pytz.all_timezones查看
+            参考 pytz 时区列表: https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568
 
     Returns:
         str: 转换后的时间字符串
@@ -92,15 +92,26 @@ def create_starlette_app(mcp_server: Server) -> Starlette:
         ],
     )
 
+def run_server(mode='stdio'):
+    """Run the MCP server."""
+    if mode == 'stdio':
+        mcp.run(transport="stdio")
+    elif mode == 'sse':
+        mcp_server = mcp._mcp_server
+
+        PORT = 8000
+        print(f"Starting SSE server on port {PORT}...")
+
+        parser = argparse.ArgumentParser(description='Run MCP SSE-based server')
+        parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
+        parser.add_argument('--port', type=int, default=PORT, help='Port to listen on')
+        args = parser.parse_args()
+
+        # Bind SSE request handling to MCP server
+        starlette_app = create_starlette_app(mcp_server)
+
+        uvicorn.run(starlette_app, host=args.host, port=args.port)
+
 if __name__ == "__main__":
-    mcp_server = mcp._mcp_server
-
-    parser = argparse.ArgumentParser(description='Run MCP SSE-based server')
-    parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
-    parser.add_argument('--port', type=int, default=8000, help='Port to listen on')
-    args = parser.parse_args()
-
-    # Bind SSE request handling to MCP server
-    starlette_app = create_starlette_app(mcp_server)
-
-    uvicorn.run(starlette_app, host=args.host, port=args.port)
+    # run_server(mode='sse')
+    run_server(mode='stdio')

@@ -172,6 +172,13 @@ class MCPClient:
                 if any(tool.name == tool_name for tool in response.tools):
                     # Execute tool call
                     result = await self.session.call_tool(tool_name, tool_args)
+                    '''
+                    result = ToolResult(
+                        meta=None ,
+                        content=[TextContent(type='text', text='2025-04-23T11:37:17.760668', annotations=None)] ,
+                        isError=False ,
+                    )
+                    '''
                     tool_results.append({"call": tool_name, "result": result})
                     final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
@@ -189,11 +196,11 @@ class MCPClient:
                             }
                         ]
                     })
-                messages.append({
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "content": str(result.content)
-                })
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": str(result.content)
+                    })
 
             # Get next response from OpenAI
             response = await self.client.chat.completions.create(

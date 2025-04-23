@@ -7,7 +7,6 @@ from contextlib import AsyncExitStack
 
 from mcp import ClientSession
 from mcp.client.sse import sse_client
-from mcp.client.stdio import stdio_client
 
 from openai import AsyncOpenAI
 
