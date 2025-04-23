@@ -1,6 +1,7 @@
 import os
 import json
 import asyncio
+import textwrap
 from typing import List
 from contextlib import AsyncExitStack
 
@@ -182,10 +183,11 @@ class MyMCPClient:
         Type your queries or command
 
         Commands:
-        - 'quit': Exit the program
-        - 'restart': Restart the dialogue and clean up memory
-        - 'help': Show this help message
+          - 'quit': Exit the program
+          - 'restart': Restart the dialogue and clean up memory
+          - 'help': Show this help message
         """
+        help_text = textwrap.dedent(help_text)
         print(help_text)
         
         while True:
@@ -216,11 +218,6 @@ class MyMCPClient:
         logger.info("Memory cleaned.")
 
 async def main():
-    # if len(sys.argv) < 2:
-    #     # print("Usage: uv run client.py <URLs of SSE MCP servers separated by comma (i.e. http://localhost:8080/sse,http://localhost:8081/sse)>")
-    #     print("Usage: python client.py <path to server script> ")
-    #     sys.exit(1)
-    
     cfg = get_cfg_defaults()
     client = MyMCPClient(cfg)
     try:
