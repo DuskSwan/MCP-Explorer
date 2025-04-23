@@ -36,6 +36,10 @@ class MyMCPClient:
             base_url=model_info[cfg.MODEL.MARK]["base_url"],
         )
         self.model_name = cfg.MODEL.NAME
+        self.messages = [{
+            "role": "system",
+            "content": "You are a helpful assistant."
+        }]
         
 
     async def connect_to_servers(self, server_script_paths: List[str]):
@@ -80,12 +84,10 @@ class MyMCPClient:
         """Process a query using OpenAI and available tools"""
         logger.info("Processing a  query...")
         
-        messages = [
-            {
-                "role": "user",
-                "content": query
-            }
-        ]
+        self.messages += [{
+            "role": "user",
+            "content": query
+        }]
 
         available_tools = []
         for session in self.sessions:
@@ -105,7 +107,7 @@ class MyMCPClient:
         # Initial OpenAI API call
         response = await self.client.chat.completions.create(
             model=self.model_name,
-            messages=messages,
+            messages=self.messages,
             tools=available_tools
         )
 
@@ -140,7 +142,7 @@ class MyMCPClient:
                         final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
 
                         # Add tool call and result to messages
-                        messages.append({
+                        self.messages.append({
                             "role": "assistant",
                             "tool_calls": [
                                 {
@@ -153,7 +155,7 @@ class MyMCPClient:
                                 }
                             ]
                         })
-                        messages.append({
+                        self.messages.append({
                             "role": "tool",
                             "tool_call_id": tool_call.id,
                             "content": str(result.content)
@@ -162,7 +164,7 @@ class MyMCPClient:
             # Get next response from OpenAI
             response = await self.client.chat.completions.create(
                 model=self.model_name,
-                messages=messages,
+                messages=self.messages,
                 tools=available_tools
             )
             
@@ -175,19 +177,34 @@ class MyMCPClient:
     async def chat_loop(self):
         """Run an interactive chat loop"""
         print("\nMCP Client Started!")
-        print("Type your queries or 'quit' to exit.")
+        print("Type your queries or command")
+        print(" - command 'quit' to exit.")
+        # print(" - command 'help' to get help.")
+        print(" - command 'restart' to clean up memory and restart dialogue.")
         
         while True:
             try:
                 query = input("\nQuery: ").strip()
                 if query.lower() == 'quit':
                     break
+                if query.lower() == 'restart':
+                    print("Restarting dialogue...")
+                    self.clean_dialogue()
+                    continue
                 response = await self.process_query(query)
                 print("\n" + response)
             except Exception as e:
                 print(f"\nError: {str(e)}")
         
         print("\nExited.")
+    
+    def clean_dialogue(self):
+        """Clean up memory and restart dialogue"""
+        self.messages = [{
+            "role": "system",
+            "content": "You are a helpful assistant."
+        }]
+        logger.info("Memory cleaned.")
 
 async def main():
     # if len(sys.argv) < 2:
