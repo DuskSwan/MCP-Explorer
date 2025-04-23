@@ -17,12 +17,12 @@ from ollama import ChatResponse
 response: ChatResponse = chat(model='llama3.2', messages=[
   {
     'role': 'user',
-    'content': 'Why is the sky blue?',
+    'content': 'What tools can you call?',
   },
 ])
 print(response['message']['content'])
 # or access fields directly from the response object
-# print(response.message.content)
+# print(response)
 
 '''
 print response's structure, it will be a ChatResponse object which is similar to openai's ChatCompletion object.

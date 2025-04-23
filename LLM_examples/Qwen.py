@@ -48,7 +48,17 @@ ChatCompletion(
                 annotations=None, 
                 audio=None, 
                 function_call=None, 
-                tool_calls=None
+                tool_calls=[
+                    ChatCompletionMessageToolCall(
+                        id='call_0_a2fda85a-7b8c-4b4e-afef-603481ec00ab',
+                        function=Function(
+                            arguments='{"image_url":"C:\\Users\\kyland\\Desktop\\abstract_blue_art.jpg"}', 
+                            name='show_img'
+                        ),
+                        type='function',
+                        index=0
+                    )
+                ]
             )
         )
     ], 

@@ -3,8 +3,15 @@ from yacs.config import CfgNode as CN
 _C = CN()
 
 _C.MODEL = CN()
-_C.MODEL.MARK = "DASHSCOPE" 
-_C.MODEL.NAME = "qwen2.5-3b-instruct" 
+# _C.MODEL.TYPE = "openai"  
+#     # "openai", "ollama"
+#     # Deepseek and Qwen are in openai style
+# _C.MODEL.MARK = "DASHSCOPE" 
+# _C.MODEL.NAME = "qwen2.5-3b-instruct" 
+
+_C.MODEL.TYPE = "ollama"
+_C.MODEL.MARK = "LLAMA"
+_C.MODEL.NAME = "llama3.2"
 
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [
