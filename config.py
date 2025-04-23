@@ -3,15 +3,20 @@ from yacs.config import CfgNode as CN
 _C = CN()
 
 _C.MODEL = CN()
-# _C.MODEL.TYPE = "openai"  
+# _C.MODEL.TYPE = "openai"  # SDK style
 #     # "openai", "ollama"
 #     # Deepseek and Qwen are in openai style
-# _C.MODEL.MARK = "DASHSCOPE" 
+# _C.MODEL.MARK = "DASHSCOPE" # API KEY name
 # _C.MODEL.NAME = "qwen2.5-3b-instruct" 
 
 _C.MODEL.TYPE = "ollama"
 _C.MODEL.MARK = "LLAMA"
-_C.MODEL.NAME = "llama3.2"
+_C.MODEL.NAME =  "phi4-mini"
+    # "llama3.2"
+
+# _C.MODEL.TYPE = "gemini"
+# _C.MODEL.MARK = "GEMINI"
+# _C.MODEL.NAME =  "gemini-2.0-flash"
 
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [

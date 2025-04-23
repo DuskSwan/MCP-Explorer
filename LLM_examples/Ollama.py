@@ -14,10 +14,10 @@ OLLAMA_MODELS=D:\some\location\models
 from ollama import chat
 from ollama import ChatResponse
 
-response: ChatResponse = chat(model='llama3.2', messages=[
+response: ChatResponse = chat(model='gemma3', messages=[
   {
     'role': 'user',
-    'content': 'What tools can you call?',
+    'content': 'Introduce yourself.',
   },
 ])
 print(response['message']['content'])

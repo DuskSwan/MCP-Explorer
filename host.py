@@ -21,7 +21,7 @@ from config import get_cfg_defaults
 model_info = {
     "DEEPSEEK": {"base_url": "https://api.deepseek.com",},
     "DASHSCOPE": {"base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",},
-    "GEMINI": {"base_url": "",},
+    "GEMINI": {"base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",},
 }
 
 class MyMCPClient:
@@ -177,10 +177,16 @@ class MyMCPClient:
     async def chat_loop(self):
         """Run an interactive chat loop"""
         print("\nMCP Client Started!")
-        print("Type your queries or command")
-        print(" - command 'quit' to exit.")
-        # print(" - command 'help' to get help.")
-        print(" - command 'restart' to clean up memory and restart dialogue.")
+
+        help_text = """
+        Type your queries or command
+
+        Commands:
+        - 'quit': Exit the program
+        - 'restart': Restart the dialogue and clean up memory
+        - 'help': Show this help message
+        """
+        print(help_text)
         
         while True:
             try:
@@ -190,6 +196,9 @@ class MyMCPClient:
                 if query.lower() == 'restart':
                     print("Restarting dialogue...")
                     self.clean_dialogue()
+                    continue
+                if query.lower() == 'help':
+                    print(help_text)
                     continue
                 response = await self.process_query(query)
                 print("\n" + response)
