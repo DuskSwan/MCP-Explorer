@@ -13,6 +13,9 @@ _C.MODEL.NAME = "deepseek-chat"
 # _C.MODEL.MARK = "GEMINI"
 # _C.MODEL.NAME =  "gemini-2.0-flash"
 
+_C.MODEL.MARK = "OLLAMA"
+_C.MODEL.NAME = "llama3.3"
+
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [
     "D:/GitRepo/MCP-Explorer/my_servers/TimeServer/timetools.py",
