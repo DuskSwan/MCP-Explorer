@@ -74,9 +74,9 @@ starlette==0.46.2
 sympy==1.13.1
 threadpoolctl==3.6.0
 tokenizers==0.21.1
-torch==2.6.0+cu126
-torchaudio==2.6.0+cu126
-torchvision==0.21.0+cu126
+# torch==2.6.0+cu126
+# torchaudio==2.6.0+cu126
+# torchvision==0.21.0+cu126
 tqdm==4.67.1
 typing-extensions==4.13.2
 typing-inspection==0.4.0
