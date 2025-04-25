@@ -3,6 +3,11 @@
 API获取见 https://aistudio.google.com/apikey
 模型价格见 https://aistudio.google.com/plan_information
 Gemini API 使用入门 https://ai.google.dev/gemini-api/docs/text-generation?hl=zh-cn
+
+使用 Python 3.9 及更高版本时，请使用以下 pip 命令安装 google-genai 软件包
+```bash
+pip install -q -U google-genai
+```
 '''
 
 from google import genai

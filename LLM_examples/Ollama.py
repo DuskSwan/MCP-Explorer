@@ -4,6 +4,11 @@
 菜鸟教程 https://www.runoob.com/ollama/ollama-python-sdk.html
 可用模型列表 https://ollama.com/search
 
+需要下载Ollama客户端，以及安装库
+```bash
+pip install ollama
+```
+
 顺带一提，Ollama下载时默认安装到C盘，指定下载路径需要安装时在命令行中给出参数
 OllamaSetup.exe /DIR="d:\some\location"
 

@@ -3,6 +3,11 @@ Qwen系列模型的使用
 获取API key见 https://help.aliyun.com/zh/model-studio/get-api-key?spm=a2c4g.11186623.0.0.3c726f53PvOJcs
 模型价格见 https://help.aliyun.com/zh/model-studio/models
 官方使用示例见 https://help.aliyun.com/zh/model-studio/text-generation?spm=a2c4g.11186623.0.0.190d1d1cfxiGi1#bfae0adf88aa2
+
+很多模型都提供了与 OpenAI 兼容的 API 格式，可以使用 OpenAI SDK 来访问，这需要的库是
+```bash
+pip install openai
+```
 '''
 
 import os
