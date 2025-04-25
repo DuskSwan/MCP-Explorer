@@ -4,12 +4,12 @@ _C = CN()
 
 _C.MODEL = CN()
 
-_C.MODEL.MARK = "DASHSCOPE" # API KEY name
+# _C.MODEL.MARK = "DASHSCOPE" # API KEY name
 # _C.MODEL.NAME = "qwen2.5-3b-instruct" 
-_C.MODEL.NAME = "qwen-max"
+# _C.MODEL.NAME = "qwen-max-latest"
 
-# _C.MODEL.MARK = "DEEPSEEK"
-# _C.MODEL.NAME = "deepseek-chat"
+_C.MODEL.MARK = "DEEPSEEK"
+_C.MODEL.NAME = "deepseek-chat"
 # _C.MODEL.NAME = "deepseek-reasoner" # 不支持tools调用
 
 # _C.MODEL.MARK = "GEMINI"

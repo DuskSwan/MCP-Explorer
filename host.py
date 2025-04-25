@@ -135,7 +135,8 @@ class MyMCPClient:
         logger.info("Sending messages to the model...")
 
         assistant_message = await self.get_response_message()
-        final_text = [assistant_message.content or ""]
+        # final_text = [assistant_message.content or ""]
+        if assistant_message.content: print(assistant_message.content)
 
         if not assistant_message.tool_calls:
             logger.info("No tool calls found in the response.")
@@ -143,7 +144,8 @@ class MyMCPClient:
                 "role": "assistant",
                 "content": assistant_message.content
             })
-            return "\n".join(final_text)
+            # return "\n".join(final_text)
+
         else:
             logger.info("Assistant call tools:{}".format([tool_call.function.name for tool_call in assistant_message.tool_calls]))
             # Handle each tool call
@@ -162,7 +164,8 @@ class MyMCPClient:
                         logger.info(f"calling tool [{tool_name}] with args [{tool_args}], got result:[{result_txt}]")
                         
                         # tool_results.append({"call": tool_name, "result": result})
-                        final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
+                        # final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
+                        print(f"[Calling tool {tool_name} with args {tool_args}]")
 
                         # Add tool call and result to messages
                         self.messages.append({
@@ -182,9 +185,10 @@ class MyMCPClient:
                             "content": result_txt
                         })
             
-            next_message_txt = await self.send_messages()
-            final_text.append(next_message_txt)
-            return "\n".join(final_text)
+            await self.send_messages()
+            # next_message_txt = await self.send_messages()
+            # final_text.append(next_message_txt)
+            # return "\n".join(final_text)
         
 
     
@@ -224,8 +228,9 @@ class MyMCPClient:
                 if query.lower() == 'help':
                     print(help_text)
                     continue
-                response = await self.process_query(query)
-                print("\n" + response)
+                # response = await self.process_query(query)
+                # print("\n" + response)
+                await self.process_query(query)
             except Exception as e:
                 print(f"\nError: {str(e)}")
         
