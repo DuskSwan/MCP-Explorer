@@ -33,10 +33,11 @@ class MyMCPClient:
         self.sessions: List[ClientSession] = []
         # self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
-        self.messages = [{
+        self.init_messages = [{
             "role": "system",
             "content": "You are a helpful assistant. If you have not called any tool, answer the question. Otherwise, call the appropriate tool."
         }]
+        self.messages = self.init_messages.copy()
     
     async def cleanup(self):
         """Properly clean up the sessions and streams"""
@@ -106,7 +107,6 @@ class MyMCPClient:
         )
 
         return response.choices[0].message
-
 
     async def process_query(self, query: str) -> str:
         """Process a query using OpenAI and available tools"""
@@ -199,7 +199,6 @@ class MyMCPClient:
             
             await self.send_messages()
 
-    
     def self_check(self):
         """Check if everything is ok"""
         if len(self.messages) > self.cfg.HOST.MAX_MASSAGE_TURNS:
@@ -244,10 +243,7 @@ class MyMCPClient:
     
     def clean_dialogue(self):
         """Clean up memory and restart dialogue"""
-        self.messages = [{
-            "role": "system",
-            "content": "You are a helpful assistant."
-        }]
+        self.messages = self.init_messages.copy()
         logger.info("Memory cleaned.")
 
 async def main():

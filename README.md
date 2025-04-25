@@ -9,7 +9,9 @@
 
 ## 依赖环境
 
-使用`pip install -r requirements.txt`或者`uv install`（读取uv.lock）安装所需环境
+使用`pip install -r requirements.txt`或者`uv add -r requirements.txt`安装所需环境
+
+（uv.lock我还不会用o( ╯□╰ )o，GPT说可以用`uv pip install -r uv.lock`，我表示存疑）
 
 ## 结构说明
 
