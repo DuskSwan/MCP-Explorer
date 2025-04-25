@@ -12,3 +12,7 @@
 # wallpaper save
 **/imgs/
 **/*.jpg
+
+# logs
+logs
+**/*.log

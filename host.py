@@ -42,13 +42,14 @@ class MyMCPClient:
         """Properly clean up the sessions and streams"""
         await self.exit_stack.aclose()
 
-    async def connect_to_servers(self, server_script_paths: List[str]):
+    async def connect_to_servers(self):
         """
         Connect to local MCP server scripts
 
         Args:
             server_script_paths: list of path to the server script (for me only .py)
         """
+        server_script_paths: List[str] = self.cfg.SERVER.LOCAL_SCRIPTS
         self.sessions = []
         for server_script_path in server_script_paths:
             is_python = server_script_path.endswith('.py')
@@ -240,9 +241,12 @@ class MyMCPClient:
 
 async def main():
     cfg = get_cfg_defaults()
+    if cfg.HOST.LOG_FILE:
+        logger.remove() # 移除控制台输出
+        logger.add(cfg.HOST.LOG_FILE, rotation="1 MB", retention="7 days", level="DEBUG")
     client = MyMCPClient(cfg)
     try:
-        await client.connect_to_servers(cfg.SERVER.LOCAL_SCRIPTS)
+        await client.connect_to_servers()
         await client.chat_loop()
     finally:
         await client.cleanup()

@@ -26,6 +26,7 @@ _C.SERVER.LOCAL_SCRIPTS = [
 
 _C.HOST = CN()
 _C.HOST.MAX_MASSAGE_TURNS = 30 # max turns of messages in the conversation
+_C.HOST.LOG_FILE = "logs/.log" # log file name, or "" to print to console
 
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""
