@@ -24,12 +24,12 @@ logger = logging.getLogger(MCP_SERVER_NAME)
 mcp = FastMCP(MCP_SERVER_NAME)
 
 @mcp.tool()
-def get_time():
+def get_current_time():
     """
-    获取当前时间
+    get current time in ISO 8601 format
 
     Returns:
-        str: 当前时间字符串 (ISO 8601 格式)
+        str: time string in ISO 8601 format
     """
     current_time = datetime.now().isoformat()
     return current_time
@@ -37,15 +37,15 @@ def get_time():
 @mcp.tool()
 def transform_timezone(source_time: str, timezone: str) -> str:
     """
-    将源时间转换为指定时区的时间
+    transform the source time string to the target timezone
 
     Args:
-        source_time (str): 源时间字符串,格式为 ISO 8601，例如: "2023-10-01T12:00:00+00:00"
-        timezone (str): 时区字符串,例如 "Asia/Shanghai" 或 "America/New_York"，可用pytz.all_timezones查看
-            参考 pytz 时区列表: https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568
+        source_time (str): source time string in ISO 8601 format, e.g. "2023-10-01T12:00:00"
+        timezone (str): target timezone string, e.g. "Asia/Shanghai", "America/New_York"
+            pytz time zone list: https://gist.github.com/heyalexej/8bf688fd67d7199be4a1682b3eec7568
 
     Returns:
-        str: 转换后的时间字符串
+        str: transformed time string in ISO 8601 format
     """
     try:
         # 解析源时间字符串为 datetime 对象

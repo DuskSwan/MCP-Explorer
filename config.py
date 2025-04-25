@@ -18,8 +18,8 @@ _C.MODEL.NAME = "llama3.2"
 
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [
-    "D:/GitRepo/MCP-Explorer/my_servers/TimeServer/timetools.py",
-    "D:/GitRepo/MCP-Explorer/my_servers/WallpaperServer/Unsplash.py",
+    "D:/GitRepo/MCP-Explorer/my_servers/timetools.py",
+    "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
 ]
 
 def get_cfg_defaults():

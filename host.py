@@ -30,19 +30,18 @@ class MyMCPClient:
     def __init__(self, cfg):
         # Initialize session and client objects
         self.cfg = cfg
+        self.model_name = cfg.MODEL.NAME
         self.sessions: List[ClientSession] = []
         # self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
-        self.client = AsyncOpenAI(
-            api_key=os.getenv("{}_API_KEY".format(cfg.MODEL.MARK.upper())),
-            base_url=model_info[cfg.MODEL.MARK]["base_url"],
-        )
-        self.model_name = cfg.MODEL.NAME
         self.messages = [{
             "role": "system",
             "content": "You are a helpful assistant. If you have not called any tool, answer the question. Otherwise, call the appropriate tool."
         }]
-        
+    
+    async def cleanup(self):
+        """Properly clean up the sessions and streams"""
+        await self.exit_stack.aclose()
 
     async def connect_to_servers(self, server_script_paths: List[str]):
         """
@@ -78,9 +77,20 @@ class MyMCPClient:
             tools = response.tools
             logger.info("Connected to server with tools:{}".format( [tool.name for tool in tools] ))
 
-    async def cleanup(self):
-        """Properly clean up the sessions and streams"""
-        await self.exit_stack.aclose()
+    async def get_response_message(self, messages: List[dict], tools: List[dict] = None) -> str:
+        """Get response from OpenAI API"""
+        client = AsyncOpenAI(
+            api_key=os.getenv("{}_API_KEY".format(self.cfg.MODEL.MARK.upper())),
+            base_url=model_info[self.cfg.MODEL.MARK]["base_url"],
+        )
+        response = await client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            tools=tools
+        )
+
+        return response.choices[0].message
+
 
     async def process_query(self, query: str) -> str:
         """Process a query using OpenAI and available tools"""
@@ -108,22 +118,24 @@ class MyMCPClient:
 
         formatted_messages = ''
         for message in self.messages:
+            formatted_messages += "\n"
             for key, value in message.items():
                 formatted_messages += f"{key}: {value}\n"
         logger.info("Formatted messages: \n{}".format(formatted_messages))
 
         # Initial OpenAI API call
-        response = await self.client.chat.completions.create(
-            model=self.model_name,
-            messages=self.messages,
-            tools=available_tools
-        )
+        # response = await self.client.chat.completions.create(
+        #     model=self.model_name,
+        #     messages=self.messages,
+        #     tools=available_tools
+        # )
 
         # Process response and handle tool calls
         # tool_results = []
         final_text = []
 
-        assistant_message = response.choices[0].message
+        # assistant_message = response.choices[0].message
+        assistant_message = await self.get_response_message(self.messages, available_tools)
         final_text.append(assistant_message.content or "")
 
         if not assistant_message.tool_calls:
@@ -172,13 +184,14 @@ class MyMCPClient:
                         })
 
             # Get next response from OpenAI
-            response = await self.client.chat.completions.create(
-                model=self.model_name,
-                messages=self.messages,
-                tools=available_tools
-            )
+            # response = await self.client.chat.completions.create(
+            #     model=self.model_name,
+            #     messages=self.messages,
+            #     tools=available_tools
+            # )
             
-            assistant_message = response.choices[0].message
+            # assistant_message = response.choices[0].message
+            assistant_message = await self.get_response_message(self.messages, available_tools)
             if assistant_message.content:
                 final_text.append(assistant_message.content)
                 self.messages.append({
