@@ -8,3 +8,7 @@
 # python
 **/__pycache__/
 **/*.pyc
+
+# wallpaper save
+**/imgs/
+**/*.jpg

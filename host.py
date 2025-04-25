@@ -13,8 +13,6 @@ from openai import AsyncOpenAI
 
 from dotenv import load_dotenv
 load_dotenv()
-# DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-# DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
 
 from loguru import logger
 from config import get_cfg_defaults
@@ -123,20 +121,8 @@ class MyMCPClient:
                 formatted_messages += f"{key}: {value}\n"
         logger.info("Formatted messages: \n{}".format(formatted_messages))
 
-        # Initial OpenAI API call
-        # response = await self.client.chat.completions.create(
-        #     model=self.model_name,
-        #     messages=self.messages,
-        #     tools=available_tools
-        # )
-
-        # Process response and handle tool calls
-        # tool_results = []
-        final_text = []
-
-        # assistant_message = response.choices[0].message
         assistant_message = await self.get_response_message(self.messages, available_tools)
-        final_text.append(assistant_message.content or "")
+        final_text = [assistant_message.content or ""]
 
         if not assistant_message.tool_calls:
             logger.info("No tool calls found in the response.")
@@ -156,9 +142,10 @@ class MyMCPClient:
                     response = await session.list_tools()
                     if any(tool.name == tool_name for tool in response.tools):
                         # Execute tool call
-                        result = await session.call_tool(tool_name, tool_args)
+                        tool_call_result = await session.call_tool(tool_name, tool_args)
+                        result_txt = tool_call_result.content[0].text
 
-                        logger.info(f"calling tool [{tool_name}] with args [{tool_args}], got result:[{result.content}]")
+                        logger.info(f"calling tool [{tool_name}] with args [{tool_args}], got result:[{result_txt}]")
                         
                         # tool_results.append({"call": tool_name, "result": result})
                         final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
@@ -166,31 +153,21 @@ class MyMCPClient:
                         # Add tool call and result to messages
                         self.messages.append({
                             "role": "assistant",
-                            "tool_calls": [
-                                {
-                                    "id": tool_call.id,
-                                    "type": "function",
-                                    "function": {
-                                        "name": tool_name,
-                                        "arguments": json.dumps(tool_args)
-                                    }
+                            "tool_calls": [{
+                                "id": tool_call.id,
+                                "type": "function",
+                                "function": {
+                                    "name": tool_name,
+                                    "arguments": json.dumps(tool_args)
                                 }
-                            ]
+                            }]
                         })
                         self.messages.append({
                             "role": "tool",
                             "tool_call_id": tool_call.id,
-                            "content": str(result.content)
+                            "content": result_txt
                         })
-
-            # Get next response from OpenAI
-            # response = await self.client.chat.completions.create(
-            #     model=self.model_name,
-            #     messages=self.messages,
-            #     tools=available_tools
-            # )
             
-            # assistant_message = response.choices[0].message
             assistant_message = await self.get_response_message(self.messages, available_tools)
             if assistant_message.content:
                 final_text.append(assistant_message.content)
@@ -200,6 +177,12 @@ class MyMCPClient:
                 })
 
         return "\n".join(final_text)
+    
+    def self_check(self):
+        """Check if everything is ok"""
+        if len(self.messages) > self.cfg.HOST.MAX_MASSAGE_TURNS:
+            logger.warning("Message length exceeds the limit. Cleaning up...")
+            self.clean_dialogue()
 
     async def chat_loop(self):
         """Run an interactive chat loop"""
@@ -218,6 +201,7 @@ class MyMCPClient:
         print(help_text)
         
         while True:
+            self.self_check()
             try:
                 query = input("\nQuery: ").strip()
                 if query.lower() == 'quit':

@@ -4,23 +4,28 @@ _C = CN()
 
 _C.MODEL = CN()
 
-# _C.MODEL.MARK = "DASHSCOPE" # API KEY name
+_C.MODEL.MARK = "DASHSCOPE" # API KEY name
 # _C.MODEL.NAME = "qwen2.5-3b-instruct" 
+_C.MODEL.NAME = "qwen-max"
 
 # _C.MODEL.MARK = "DEEPSEEK"
 # _C.MODEL.NAME = "deepseek-chat"
+# _C.MODEL.NAME = "deepseek-reasoner" # 不支持tools调用
 
 # _C.MODEL.MARK = "GEMINI"
 # _C.MODEL.NAME =  "gemini-2.0-flash"
 
-_C.MODEL.MARK = "OLLAMA"
-_C.MODEL.NAME = "llama3.2"
+# _C.MODEL.MARK = "OLLAMA"
+# _C.MODEL.NAME = "llama3.2"
 
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [
     "D:/GitRepo/MCP-Explorer/my_servers/timetools.py",
     "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
 ]
+
+_C.HOST = CN()
+_C.HOST.MAX_MASSAGE_TURNS = 50 # max turns of messages in the conversation
 
 def get_cfg_defaults():
   """Get a yacs CfgNode object with default values for my_project."""
