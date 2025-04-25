@@ -7,14 +7,14 @@ _C.MODEL = CN()
 # _C.MODEL.MARK = "DASHSCOPE" # API KEY name
 # _C.MODEL.NAME = "qwen2.5-3b-instruct" 
 
-_C.MODEL.MARK = "DEEPSEEK"
-_C.MODEL.NAME = "deepseek-chat"
+# _C.MODEL.MARK = "DEEPSEEK"
+# _C.MODEL.NAME = "deepseek-chat"
 
 # _C.MODEL.MARK = "GEMINI"
 # _C.MODEL.NAME =  "gemini-2.0-flash"
 
 _C.MODEL.MARK = "OLLAMA"
-_C.MODEL.NAME = "llama3.3"
+_C.MODEL.NAME = "llama3.2"
 
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [

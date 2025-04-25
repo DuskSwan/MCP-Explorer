@@ -23,6 +23,7 @@ model_info = {
     "DEEPSEEK": {"base_url": "https://api.deepseek.com",},
     "DASHSCOPE": {"base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",},
     "GEMINI": {"base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",},
+    "OLLAMA": {"base_url": "http://localhost:11434/v1",},
 }
 
 class MyMCPClient:
@@ -39,7 +40,7 @@ class MyMCPClient:
         self.model_name = cfg.MODEL.NAME
         self.messages = [{
             "role": "system",
-            "content": "You are a helpful assistant."
+            "content": "You are a helpful assistant. Reply the query of user or call proper tools."
         }]
         
 
@@ -104,6 +105,8 @@ class MyMCPClient:
         
         tool_names = [tool["function"]["name"] for tool in available_tools]
         logger.info("Available tools: {}".format(tool_names))
+
+        logger.info("Messages: \n{}".format(self.messages))
 
         # Initial OpenAI API call
         response = await self.client.chat.completions.create(
@@ -177,6 +180,7 @@ class MyMCPClient:
 
     async def chat_loop(self):
         """Run an interactive chat loop"""
+        logger.info("Starting chat loop. Model: {}".format(self.model_name))
         print("\nMCP Client Started!")
 
         help_text = """
