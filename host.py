@@ -10,6 +10,7 @@ from mcp.client.stdio import stdio_client
 from mcp.client.sse import sse_client
 
 from openai import AsyncOpenAI
+from openai.types.chat.chat_completion_message import ChatCompletionMessage
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -75,7 +76,23 @@ class MyMCPClient:
             tools = response.tools
             logger.info("Connected to server with tools:{}".format( [tool.name for tool in tools] ))
 
-    async def get_response_message(self, messages: List[dict], tools: List[dict] = None) -> str:
+            available_tools = []
+            for session in self.sessions:
+                response = await session.list_tools()
+                available_tools.extend([{
+                    "type": "function",
+                    "function": {
+                        "name": tool.name,
+                        "description": tool.description,
+                        "parameters": tool.inputSchema
+                    }
+                } for tool in response.tools])
+        
+        tool_names = [tool["function"]["name"] for tool in available_tools]
+        logger.info("Available tools: {}".format(tool_names))
+        self.tools = available_tools
+
+    async def get_response_message(self) -> ChatCompletionMessage:
         """Get response from OpenAI API"""
         client = AsyncOpenAI(
             api_key=os.getenv("{}_API_KEY".format(self.cfg.MODEL.MARK.upper())),
@@ -83,8 +100,8 @@ class MyMCPClient:
         )
         response = await client.chat.completions.create(
             model=self.model_name,
-            messages=messages,
-            tools=tools
+            messages=self.messages,
+            tools=self.tools,
         )
 
         return response.choices[0].message
@@ -99,29 +116,24 @@ class MyMCPClient:
             "content": query
         }]
 
-        available_tools = []
-        for session in self.sessions:
-            response = await session.list_tools()
-            available_tools.extend([{
-                "type": "function",
-                "function": {
-                    "name": tool.name,
-                    "description": tool.description,
-                    "parameters": tool.inputSchema
-                }
-            } for tool in response.tools])
-        
-        tool_names = [tool["function"]["name"] for tool in available_tools]
-        logger.info("Available tools: {}".format(tool_names))
-
+        result_txt = await self.send_messages()
+        return result_txt
+    
+    def show_all_messages(self):
+        """Show all messages in the conversation"""
+        logger.info("All messages in the conversation:")
         formatted_messages = ''
         for message in self.messages:
-            formatted_messages += "\n"
             for key, value in message.items():
                 formatted_messages += f"{key}: {value}\n"
+            formatted_messages += "\n"
         logger.info("Formatted messages: \n{}".format(formatted_messages))
+    
+    async def send_messages(self) -> str:
+        """Send messages to the server and get a response"""
+        logger.info("Sending messages to the model...")
 
-        assistant_message = await self.get_response_message(self.messages, available_tools)
+        assistant_message = await self.get_response_message()
         final_text = [assistant_message.content or ""]
 
         if not assistant_message.tool_calls:
@@ -130,6 +142,7 @@ class MyMCPClient:
                 "role": "assistant",
                 "content": assistant_message.content
             })
+            return "\n".join(final_text)
         else:
             logger.info("Assistant call tools:{}".format([tool_call.function.name for tool_call in assistant_message.tool_calls]))
             # Handle each tool call
@@ -168,15 +181,11 @@ class MyMCPClient:
                             "content": result_txt
                         })
             
-            assistant_message = await self.get_response_message(self.messages, available_tools)
-            if assistant_message.content:
-                final_text.append(assistant_message.content)
-                self.messages.append({
-                    "role": "assistant",
-                    "content": assistant_message.content
-                })
+            next_message_txt = await self.send_messages()
+            final_text.append(next_message_txt)
+            return "\n".join(final_text)
+        
 
-        return "\n".join(final_text)
     
     def self_check(self):
         """Check if everything is ok"""
@@ -202,6 +211,7 @@ class MyMCPClient:
         
         while True:
             self.self_check()
+            self.show_all_messages()
             try:
                 query = input("\nQuery: ").strip()
                 if query.lower() == 'quit':
