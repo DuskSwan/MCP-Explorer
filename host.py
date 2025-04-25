@@ -40,7 +40,7 @@ class MyMCPClient:
         self.model_name = cfg.MODEL.NAME
         self.messages = [{
             "role": "system",
-            "content": "You are a helpful assistant. Reply the query of user or call proper tools."
+            "content": "You are a helpful assistant. If you have not called any tool, answer the question. Otherwise, call the appropriate tool."
         }]
         
 
@@ -106,7 +106,11 @@ class MyMCPClient:
         tool_names = [tool["function"]["name"] for tool in available_tools]
         logger.info("Available tools: {}".format(tool_names))
 
-        logger.info("Messages: \n{}".format(self.messages))
+        formatted_messages = ''
+        for message in self.messages:
+            for key, value in message.items():
+                formatted_messages += f"{key}: {value}\n"
+        logger.info("Formatted messages: \n{}".format(formatted_messages))
 
         # Initial OpenAI API call
         response = await self.client.chat.completions.create(
@@ -122,12 +126,14 @@ class MyMCPClient:
         assistant_message = response.choices[0].message
         final_text.append(assistant_message.content or "")
 
-        if assistant_message.tool_calls:
-            logger.info("Assistant call tools:{}".format([tool_call.function.name for tool_call in assistant_message.tool_calls]))
-        else:
+        if not assistant_message.tool_calls:
             logger.info("No tool calls found in the response.")
-
-        if assistant_message.tool_calls:
+            self.messages.append({
+                "role": "assistant",
+                "content": assistant_message.content
+            })
+        else:
+            logger.info("Assistant call tools:{}".format([tool_call.function.name for tool_call in assistant_message.tool_calls]))
             # Handle each tool call
             for tool_call in assistant_message.tool_calls:
                 tool_name = tool_call.function.name
@@ -175,6 +181,10 @@ class MyMCPClient:
             assistant_message = response.choices[0].message
             if assistant_message.content:
                 final_text.append(assistant_message.content)
+                self.messages.append({
+                    "role": "assistant",
+                    "content": assistant_message.content
+                })
 
         return "\n".join(final_text)
 
