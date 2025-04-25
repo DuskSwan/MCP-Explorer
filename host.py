@@ -130,6 +130,17 @@ class MyMCPClient:
             formatted_messages += "\n"
         logger.info("Formatted messages: \n{}".format(formatted_messages))
     
+    def user_confirm_tool_call(self, tool_name: str, tool_args: dict) -> bool:
+        print(f"[Calling tool {tool_name} with args {tool_args}]")
+        if not self.cfg.HOST.NEED_USER_CONFIRM:
+            return True
+        # Ask user for confirmation
+        cmd = input("Do you want to call this tool? ('n' to cancel, any other key to continue): ").strip().lower()
+        if cmd == 'n':
+            print(f"Skipping tool call [{tool_name}]")
+            return False
+        return True
+    
     async def send_messages(self) -> str:
         """Send messages to the server and get a response"""
         logger.info("Sending messages to the model...")
@@ -157,15 +168,16 @@ class MyMCPClient:
                 for session in self.sessions:
                     response = await session.list_tools()
                     if any(tool.name == tool_name for tool in response.tools):
+                        # user check
+                        if not self.user_confirm_tool_call(tool_name, tool_args):
+                            continue
+
                         # Execute tool call
                         tool_call_result = await session.call_tool(tool_name, tool_args)
                         result_txt = tool_call_result.content[0].text
+                        print(f'[Tool result]: {result_txt}')
 
                         logger.info(f"calling tool [{tool_name}] with args [{tool_args}], got result:[{result_txt}]")
-                        
-                        # tool_results.append({"call": tool_name, "result": result})
-                        # final_text.append(f"[Calling tool {tool_name} with args {tool_args}]")
-                        print(f"[Calling tool {tool_name} with args {tool_args}]")
 
                         # Add tool call and result to messages
                         self.messages.append({
@@ -186,10 +198,6 @@ class MyMCPClient:
                         })
             
             await self.send_messages()
-            # next_message_txt = await self.send_messages()
-            # final_text.append(next_message_txt)
-            # return "\n".join(final_text)
-        
 
     
     def self_check(self):
@@ -228,8 +236,6 @@ class MyMCPClient:
                 if query.lower() == 'help':
                     print(help_text)
                     continue
-                # response = await self.process_query(query)
-                # print("\n" + response)
                 await self.process_query(query)
             except Exception as e:
                 print(f"\nError: {str(e)}")
