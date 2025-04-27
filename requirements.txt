@@ -1,6 +1,7 @@
 # project tools
 loguru==0.7.3
 yacs==0.1.8
+pipdeptree==2.26.1
 
 # mcp requirements
 mcp==1.6.0
@@ -19,6 +20,4 @@ google-genai==1.11.0
 Requests==2.32.3
 Pillow==11.2.1
 pytz==2025.2
-
-
-
+langchain-community==0.3.22

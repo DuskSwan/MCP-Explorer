@@ -45,7 +45,7 @@ def qwen():
 
         completion = client.chat.completions.create(
             # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
-            model="qwen-max",
+            model="qwen-turbo",
             messages=[
                 {'role': 'system', 'content': 'You are a helpful assistant.'},
                 {'role': 'user', 'content': '你是谁？'}
@@ -102,5 +102,5 @@ ChatCompletion(
 '''
 
 if __name__ == "__main__":
-    # qwen()
-    deepseek()
+    qwen()
+    # deepseek()

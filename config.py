@@ -20,8 +20,9 @@ _C.MODEL.NAME = "deepseek-chat"
 
 _C.SERVER = CN()
 _C.SERVER.LOCAL_SCRIPTS = [
-    "D:/GitRepo/MCP-Explorer/my_servers/timetools.py",
+    "D:/GitRepo/MCP-Explorer/my_servers/Timetools.py",
     "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
+    "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
 ] # absolute path of local scripts
 
 _C.HOST = CN()
