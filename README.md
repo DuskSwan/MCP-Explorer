@@ -27,7 +27,7 @@
 
 - client_examples: 自己写的MCP Client脚本。
   - stdio_client: 以stdio为输入输出方式，在本地启动服务脚本。
-  - sse_client: 以sse为输入输出方式，通过指定的端口连接到已经启动的服务。想要试用的话，将my_servers/timetools中的运行方式由run_server(mode='stdio')改成run_server(mode='sse', port=8000)然后运行，再运行uv run sse_client.py http://localhost:8000/sse 即可。
+  - sse_client: 以sse为输入输出方式，通过指定的端口连接到已经启动的服务。想要试用的话，将my_servers/timetools中的运行方式由`run_server(mode='stdio')`改成`run_server(mode='sse', port=8000)`然后运行，再运行`uv run sse_client.py http://localhost:8000/sse`即可。
 
 ## 使用方法
 
@@ -42,4 +42,6 @@ DEEPSEEK_API_KEY="xxx"
 OLLAMA_API_KEY='ollama'
 ```
 
-UNSPLASH是获取壁纸的工具。
+Unsplash是获取壁纸的工具，申请Unsplash的API key参见[这里](https://unsplash.com/documentation#getting-started)。
+
+Ollama用于本地部署大模型，并不需要API key，但为了符合OpenAI调用规则还是给一个字符串。

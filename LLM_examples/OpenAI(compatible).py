@@ -45,7 +45,7 @@ def qwen():
 
         completion = client.chat.completions.create(
             # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
-            model="qwen2.5-3b-instruct",
+            model="qwen-max",
             messages=[
                 {'role': 'system', 'content': 'You are a helpful assistant.'},
                 {'role': 'user', 'content': '你是谁？'}
@@ -66,7 +66,7 @@ ChatCompletion(
             index=0, 
             logprobs=None, 
             message=ChatCompletionMessage(
-                content='我是Qwen，由阿里云开发的预训练语言模型。我被设计用来生成各种各样的文本，包括回答问题、创作故事、编写代码等等。有什么我可以帮助你的吗？如果你有任何问题或需要帮助的地方，请尽管告诉我！', 
+                content='我是语言模型。我被设计用来生成各种各样的文本，包括回答问题、创作故事、编写代码等等。有什么可以帮助你的吗？', 
                 refusal=None, 
                 role='assistant', 
                 annotations=None, 
@@ -74,9 +74,9 @@ ChatCompletion(
                 function_call=None, 
                 tool_calls=[
                     ChatCompletionMessageToolCall(
-                        id='call_0_a2fda85a-7b8c-4b4e-afef-603481ec00ab',
+                        id='call_0_a2fda85a',
                         function=Function(
-                            arguments='{"image_url":"C:\\Users\\kyland\\Desktop\\abstract_blue_art.jpg"}', 
+                            arguments='{"image_url":"C:\\Users\\User\\Desktop\\abstract_blue_art.jpg"}', 
                             name='show_img'
                         ),
                         type='function',
