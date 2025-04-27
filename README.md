@@ -34,14 +34,17 @@
 在项目目录下创建.env文件，在其中设置API
 
 ```txt
-UNSPLASH_API='xxx'
+UNSPLASH_API="xxx"
+BRAVE_API_KEY="xxx"
 
 GEMINI_API_KEY="xxx"
 DASHSCOPE_API_KEY="xxx" 
 DEEPSEEK_API_KEY="xxx"
-OLLAMA_API_KEY='ollama'
+OLLAMA_API_KEY="ollama"
 ```
 
 Unsplash是获取壁纸的工具，申请Unsplash的API key参见[这里](https://unsplash.com/documentation#getting-started)。
+
+Brave search是一个搜索工具，申请API点击[这里](https://brave.com/search/api/)。
 
 Ollama用于本地部署大模型，并不需要API key，但为了符合OpenAI调用规则还是给一个字符串。

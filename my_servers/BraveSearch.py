@@ -50,13 +50,7 @@ def search_query_tool(query: str,
         return f"Error: {e}"
 
 
-def search_query(query, 
-                 country="ALL",
-                 search_lang="en",
-                 count=3,
-                 safesearch="off",
-                 show_results=False,
-                ):
+def search_query(query, country="ALL", search_lang="en", count=3, safesearch="off", show_results=False):
     params = {
         "country": country,
         "search_lang": search_lang,
