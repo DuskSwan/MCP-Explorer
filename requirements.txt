@@ -1,4 +1,4 @@
-# tools
+# project tools
 loguru==0.7.3
 yacs==0.1.8
 
@@ -15,7 +15,7 @@ ollama==0.4.8
 openai==1.76.0
 google-genai==1.11.0
 
-# servers
+# server tools
 Requests==2.32.3
 Pillow==11.2.1
 pytz==2025.2

@@ -13,13 +13,21 @@
 
 ## 结构说明
 
-host.py 是我为自己搭建的MCP host，里面实际上是一个Client负责接入本地（将来或许支持远端）的Server。其配置文件为config.py，模型与一些功能选择需要通过修改config.py来进行。
+- host.py: 自己搭建的MCP host，里面实际上是一个Client负责接入本地（将来或许支持远端）的Server。其配置文件为config.py，模型与一些功能选择需要通过修改config.py来进行。
 
-LLM_examples下是各个模型的调用方法。
+- LLM_examples: 各个模型的调用方法。
+  - Gemini: Google Gemini系列模型。
+  - HuggingFace: Hugging Face的开源模型。（不支持OpenAI SDK调用，暂不考虑）
+  - OpenAI: 兼容OpenAI API 格式的模型，目前包括Deepseek和Qwen系列。
+  - Ollama: Ollama上可用的模型。
 
-my_servers下是我自己写的MCP server脚本。
+- my_servers: 自己写的MCP Server脚本。
+  - timetools: 提供时间查询和时区转换功能。
+  - Unsplash: 提供壁纸查询、壁纸下载和设置壁纸功能。
 
-client_examples下是MCP client的示例。
+- client_examples: 自己写的MCP Client脚本。
+  - stdio_client: 以stdio为输入输出方式，在本地启动服务脚本。
+  - sse_client: 以sse为输入输出方式，通过指定的端口连接到已经启动的服务。想要试用的话，将my_servers/timetools中的运行方式由run_server(mode='stdio')改成run_server(mode='sse', port=8000)然后运行，再运行uv run sse_client.py http://localhost:8000/sse 即可。
 
 ## 使用方法
 

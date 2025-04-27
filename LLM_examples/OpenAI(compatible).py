@@ -1,13 +1,7 @@
 '''
-Qwen系列模型的使用
-获取API key见 https://help.aliyun.com/zh/model-studio/get-api-key?spm=a2c4g.11186623.0.0.3c726f53PvOJcs
-模型价格见 https://help.aliyun.com/zh/model-studio/models
-官方使用示例见 https://help.aliyun.com/zh/model-studio/text-generation?spm=a2c4g.11186623.0.0.190d1d1cfxiGi1#bfae0adf88aa2
-
 很多模型都提供了与 OpenAI 兼容的 API 格式，可以使用 OpenAI SDK 来访问，这需要的库是
-```bash
 pip install openai
-```
+
 '''
 
 import os
@@ -16,26 +10,51 @@ from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
 
-
-try:
+def deepseek():
     client = OpenAI(
-        api_key=DASHSCOPE_API_KEY,
-        base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        api_key=DEEPSEEK_API_KEY, 
+        base_url="https://api.deepseek.com"
+        )
+
+    response = client.chat.completions.create(
+        model="deepseek-chat",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant"},
+            {"role": "user", "content": "Hello"},
+        ],
+        stream=False
     )
 
-    completion = client.chat.completions.create(
-        # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
-        model="qwen2.5-3b-instruct",
-        messages=[
-            {'role': 'system', 'content': 'You are a helpful assistant.'},
-            {'role': 'user', 'content': '你是谁？'}
-            ]
-    )
-    print(completion.choices[0].message.content)
-except Exception as e:
-    print(f"错误信息：{e}")
-    print("请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code")
+    print(response.choices[0].message.content)
+    print(response.choices[0].message.tool_calls)
+
+def qwen():
+    '''
+    Qwen系列模型的使用
+    获取API key见 https://help.aliyun.com/zh/model-studio/get-api-key?spm=a2c4g.11186623.0.0.3c726f53PvOJcs
+    模型价格见 https://help.aliyun.com/zh/model-studio/models
+    官方使用示例见 https://help.aliyun.com/zh/model-studio/text-generation?spm=a2c4g.11186623.0.0.190d1d1cfxiGi1#bfae0adf88aa2
+    '''
+    try:
+        client = OpenAI(
+            api_key=DASHSCOPE_API_KEY,
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        )
+
+        completion = client.chat.completions.create(
+            # 模型列表：https://help.aliyun.com/zh/model-studio/getting-started/models
+            model="qwen2.5-3b-instruct",
+            messages=[
+                {'role': 'system', 'content': 'You are a helpful assistant.'},
+                {'role': 'user', 'content': '你是谁？'}
+                ]
+        )
+        print(completion.choices[0].message.content)
+    except Exception as e:
+        print(f"错误信息：{e}")
+        print("请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code")
 
 '''
 回复结构：
@@ -81,3 +100,7 @@ ChatCompletion(
     )
 )
 '''
+
+if __name__ == "__main__":
+    # qwen()
+    deepseek()
