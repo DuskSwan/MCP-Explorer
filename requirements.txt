@@ -7,9 +7,6 @@ pipdeptree==2.26.1
 mcp==1.6.0
 httpx==0.28.1
 dotenv==0.9.9
-# sse
-starlette==0.46.2
-uvicorn==0.34.2
 
 # LLM 
 ollama==0.4.8
