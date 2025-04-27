@@ -1,16 +1,15 @@
 # env
-**/.env
-**/.venv/
+.env
+.venv/
 
 # editor
-**/.vscode/
+.vscode/
 
 # python
-**/__pycache__/
-**/*.pyc
+__pycache__/
 
 # wallpaper save
-**/imgs/
+imgs/
 **/*.jpg
 
 # logs

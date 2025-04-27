@@ -108,7 +108,7 @@ class MyMCPClient:
 
         return response.choices[0].message
 
-    async def process_query(self, query: str) -> str:
+    async def process_query(self, query: str) -> None:
         """Process a query using OpenAI and available tools"""
         logger.info("Processing a  query...")
         
@@ -117,8 +117,7 @@ class MyMCPClient:
             "content": query
         }]
 
-        result_txt = await self.send_messages()
-        return result_txt
+        await self.send_messages()
     
     def show_all_messages(self):
         """Show all messages in the conversation"""
@@ -131,7 +130,7 @@ class MyMCPClient:
         logger.info("Formatted messages: \n{}".format(formatted_messages))
     
     def user_confirm_tool_call(self, tool_name: str, tool_args: dict) -> bool:
-        print(f"[Calling tool {tool_name} with args {tool_args}]")
+        print(f"\n[Calling tool {tool_name} with args {tool_args}]")
         if not self.cfg.HOST.NEED_USER_CONFIRM:
             return True
         # Ask user for confirmation
@@ -141,13 +140,13 @@ class MyMCPClient:
             return False
         return True
     
-    async def send_messages(self) -> str:
+    async def send_messages(self) -> None:
         """Send messages to the server and get a response"""
         logger.info("Sending messages to the model...")
 
         assistant_message = await self.get_response_message()
-        # final_text = [assistant_message.content or ""]
-        if assistant_message.content: print(assistant_message.content)
+        if assistant_message.content: 
+            print('\nAnswer:',assistant_message.content)
 
         if not assistant_message.tool_calls:
             logger.info("No tool calls found in the response.")
@@ -155,7 +154,6 @@ class MyMCPClient:
                 "role": "assistant",
                 "content": assistant_message.content
             })
-            # return "\n".join(final_text)
 
         else:
             logger.info("Assistant call tools:{}".format([tool_call.function.name for tool_call in assistant_message.tool_calls]))
@@ -216,7 +214,7 @@ class MyMCPClient:
         Commands:
           - 'quit': Exit the program
           - 'restart': Restart the dialogue and clean up memory
-          - 'help': Show this help message
+          - 'help': Show help message
         """
         help_text = textwrap.dedent(help_text)
         print(help_text)

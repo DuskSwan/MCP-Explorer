@@ -19,7 +19,7 @@ OLLAMA_MODELS=D:\some\location\models
 from ollama import chat
 from ollama import ChatResponse
 
-response: ChatResponse = chat(model='llama3.3', messages=[
+response: ChatResponse = chat(model='llama3.2', messages=[
   {
     'role': 'user',
     'content': 'Introduce yourself.',
