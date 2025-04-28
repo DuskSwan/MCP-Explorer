@@ -1,5 +1,6 @@
 import argparse
 import logging
+import hashlib
 
 from starlette.applications import Starlette
 from starlette.requests import Request
@@ -12,21 +13,74 @@ from mcp.server import Server
 import uvicorn
 
 # 外星人字符画（纯ASCII，适合cmd）
-def print_alien():
-    alien = r'''
-         .-"      "-.
-        /            \
-       |              |
-       |,  .-.  .-.  ,|
-       | )(_o/  \o_)( |
-       |/     /\     \|
-       (_     ^^     _)
-        \__|IIIIII|__/
-         | \IIIIII/ |
-         \          /
-          `--------`
+aliens = [
+    r'''
+      .-""""-.
+     / -   -  \
+    |  .-. .- |
+    |  \o| |o (
+    \     ^    \
+     '.  )--'  /
+       '-...-'`
+    ''',
+    r'''
+     .-""""-.
+    / -   -  \
+   |   o   o  |
+   |     ^    |
+    \  '---' /
+     '-.__.-'
+    ''',
+    r'''
+      .-.
+     (o o)  
+     |=|=|
+    __| |__
+   /       \
+  / /|   |\ \
+ /_/ |   | \_\
+    _|   |_
+   (___|___)
+    ''',
+    r'''
+       .     .
+        \.-./
+       (o o)
+    ooO--(_)--Ooo
+      UFO above
+    ''',
+    r'''
+    .-"      "-.
+   /            \
+  |  .-.    .-.  |
+  |  |o|    |o|  |
+  |     /\\      |
+  \    (__)    /
+   '-.        .-'
+      '------'
+    ''',
+    r'''
+      ___
+    .='   '=.
+   /         \
+  |           |
+  |  .-" "-.  |
+  | /       \ |
+   \/       \/
+   (|  o o  |)
+    |   ^   |
+    |  '-'  |
+    |_______|
+ .-'/       '\-.
+(_.-'       '-._)
     '''
-    print(alien)
+]
+
+def select_alien(signal: str) -> str:
+    hash_bytes = hashlib.md5(signal.encode('utf-8')).digest()
+    hash_int = int.from_bytes(hash_bytes, byteorder='big')
+    idx = hash_int % len(aliens)
+    return aliens[idx]
 
 # 设置日志
 MCP_SERVER_NAME = "AlienCom"
@@ -40,7 +94,7 @@ mcp = FastMCP(MCP_SERVER_NAME)
 @mcp.tool()
 def summon_alien(signal: str):
     """
-    每次调用，打印一只外星人字符画。
+    每次调用，在服务端打印一只外星人字符画。
 
     Args:
         signal (str): 任意提示内容。
@@ -49,12 +103,16 @@ def summon_alien(signal: str):
         str: 返回确认消息。
     """
     logger.info(f"收到召唤外星人的信号: {signal}")
-    print("\n收到召唤外星人指令!")
-    print_alien()
-    return "外星人出现了！"
+    try:
+        selected = select_alien(signal)
+        print("\n👾 收到召唤外星人指令!")
+        print(selected)
+        return "外星人出现在了服务端！"
+    except Exception as e:
+        logger.error(f"召唤外星人失败: {e}")
+        return "外星人召唤失败！"
 
 # 创建Starlette应用
-
 def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlette:
     sse = SseServerTransport("/messages/")
 

@@ -32,9 +32,13 @@ class MyMCPClient:
         # Initialize session and client objects
         self.cfg = cfg
         self.model_name = cfg.MODEL.NAME
+
         self.sessions: List[ClientSession] = []
-        # self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
+        self._streams_contexts = []
+        self._session_contexts = []
+        self.tools = []
+
         self.init_messages = [{
             "role": "system",
             "content": "You are a helpful assistant. If you have not called any tool, answer the question. Otherwise, call the appropriate tool."
@@ -44,57 +48,87 @@ class MyMCPClient:
     async def cleanup(self):
         """Properly clean up the sessions and streams"""
         await self.exit_stack.aclose()
+        for session_context in self._session_contexts:
+            if session_context:
+                await session_context.__aexit__(None, None, None)
+        for streams_context in self._streams_contexts:
+            if streams_context:
+                await streams_context.__aexit__(None, None, None)
 
     async def connect_to_servers(self):
         """
-        Connect to local MCP server scripts
+        Connect to local MCP server by stdio or sse transport. Servers defined in config.py.
+        """
+        for server_command in self.cfg.SERVER.LOCAL_SCRIPTS:
+            if server_command.startswith("http://localhost:"):
+                await self.connect_sse_servers(server_command)
+            else:
+                await self.connect_stdio_server(server_command)
+        
+        available_tools = []
+        for session in self.sessions:
+            response = await session.list_tools()
+            available_tools.extend([{
+                "type": "function",
+                "function": {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "parameters": tool.inputSchema
+                }
+            } for tool in response.tools])
+        self.tools = available_tools
+
+    async def connect_sse_servers(self, server_url: str):
+        """
+        Connect to a local MCP server using SSE transport
 
         Args:
-            server_script_paths: list of path to the server script (for me only .py)
+            server_url: url of the server (such as http://localhost:8000/messages/)
         """
-        server_script_paths: List[str] = self.cfg.SERVER.LOCAL_SCRIPTS
-        self.sessions = []
-        for server_script_path in server_script_paths:
-            is_python = server_script_path.endswith('.py')
-            if not is_python:
-                logger.error("Server script must be a .py , but got: {}".format(server_script_path))
-                continue
+        # Store the context managers so they stay alive
+        self._streams_contexts.append(sse_client(url=server_url))
+        streams = await self._streams_contexts[-1].__aenter__() # streams相当于(stdio, write)
 
-            command = "python"
-            server_params = StdioServerParameters(
-                command=command,
-                args=[server_script_path],
-                env=None
-            )
-            logger.info("Connecting to server script: {}".format(server_script_path))
+        self._session_contexts.append(ClientSession(*streams))
+        session: ClientSession = await self._session_contexts[-1].__aenter__()
+        self.sessions.append(session)
+        await session.initialize()
 
-            stdio, write = await self.exit_stack.enter_async_context(stdio_client(server_params))
-            session = await self.exit_stack.enter_async_context(ClientSession(stdio, write))
-            self.sessions.append(session)
+        logger.info(f"Connecting to sse server {server_url}")
+        response = await session.list_tools()
+        tools = response.tools
+        logger.info(f"\nConnected to server {server_url} with tools{[tool.name for tool in tools]}")
+    
+    async def connect_stdio_server(self, server_script_path: str):
+        """
+        Connect to a local MCP server script using stdio transport
 
-            await session.initialize()
-            logger.info("Initialized session.")
+        Args:
+            server_script_path: path to the server script (for me only .py)
+        """
+        is_python = server_script_path.endswith('.py')
+        if not is_python:
+            logger.error("Server script must be a .py , but got: {}".format(server_script_path))
+            return
 
-            # List available tools
-            response = await session.list_tools()
-            tools = response.tools
-            logger.info("Connected to server with tools:{}".format( [tool.name for tool in tools] ))
-
-            available_tools = []
-            for session in self.sessions:
-                response = await session.list_tools()
-                available_tools.extend([{
-                    "type": "function",
-                    "function": {
-                        "name": tool.name,
-                        "description": tool.description,
-                        "parameters": tool.inputSchema
-                    }
-                } for tool in response.tools])
+        command = "python"
+        server_params = StdioServerParameters(
+            command=command,
+            args=[server_script_path],
+            env=None
+        )
         
-        tool_names = [tool["function"]["name"] for tool in available_tools]
-        logger.info("Available tools: {}".format(tool_names))
-        self.tools = available_tools
+        stdio, write = await self.exit_stack.enter_async_context(stdio_client(server_params))
+        session = await self.exit_stack.enter_async_context(ClientSession(stdio, write))
+        self.sessions.append(session)
+        await session.initialize()
+        logger.info("Connecting to server script: {}".format(server_script_path))
+
+        # List available tools
+        response = await session.list_tools()
+        tools = response.tools
+        logger.info(f"Connected to server with tools:{[tool.name for tool in tools]}")
+
 
     async def get_response_message(self) -> ChatCompletionMessage:
         """Get response from OpenAI API"""

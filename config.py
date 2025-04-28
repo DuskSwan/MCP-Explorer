@@ -23,7 +23,7 @@ _C.SERVER.LOCAL_SCRIPTS = [
     "D:/GitRepo/MCP-Explorer/my_servers/Timetools.py",
     # "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
     # "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
-    
+    "http://localhost:8080/sse", # 使用SSE连接的server前必须先将其启动，并一直挂着
 ] # absolute path of local scripts
 
 _C.HOST = CN()
