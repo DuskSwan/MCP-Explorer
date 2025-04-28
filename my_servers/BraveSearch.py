@@ -19,12 +19,12 @@ from mcp.server.fastmcp import FastMCP
 mcp = FastMCP("wallpaper-server")
 
 @mcp.tool()
-def search_query_tool(query: str, 
-                      country: str = "ALL",
-                      search_lang: str = "en",
-                      count: int = 3,
-                      safesearch: str = "off",
-                    ) -> str:
+def brave_search(query: str, 
+                 country: str = "ALL",
+                 search_lang: str = "en",
+                 count: int = 3,
+                 safesearch: str = "off",
+                ) -> str:
     '''
     search queries through Brave Search API
 

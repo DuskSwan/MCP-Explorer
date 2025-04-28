@@ -19,12 +19,12 @@ _C.MODEL.NAME = "deepseek-chat"
 # _C.MODEL.NAME = "llama3.2"
 
 _C.SERVER = CN()
-_C.SERVER.LOCAL_SCRIPTS = [
+_C.SERVER.ACCESS_PATHS = [
     "D:/GitRepo/MCP-Explorer/my_servers/Timetools.py",
-    # "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
-    # "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
+    "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
+    "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
     "http://localhost:8080/sse", # 使用SSE连接的server前必须先将其启动，并一直挂着
-] # absolute path of local scripts
+] 
 
 _C.HOST = CN()
 _C.HOST.MAX_MASSAGE_TURNS = 30 

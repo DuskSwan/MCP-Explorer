@@ -59,7 +59,7 @@ class MyMCPClient:
         """
         Connect to local MCP server by stdio or sse transport. Servers defined in config.py.
         """
-        for server_command in self.cfg.SERVER.LOCAL_SCRIPTS:
+        for server_command in self.cfg.SERVER.ACCESS_PATHS:
             if server_command.startswith("http://localhost:"):
                 await self.connect_sse_servers(server_command)
             else:
@@ -77,6 +77,7 @@ class MyMCPClient:
                 }
             } for tool in response.tools])
         self.tools = available_tools
+        
 
     async def connect_sse_servers(self, server_url: str):
         """
@@ -163,7 +164,7 @@ class MyMCPClient:
 
         await self.send_messages()
     
-    def show_all_messages(self):
+    def log_all_messages(self):
         """Show all messages in the conversation"""
         logger.info("All messages in the conversation:")
         formatted_messages = ''
@@ -262,10 +263,12 @@ class MyMCPClient:
         """
         help_text = textwrap.dedent(help_text)
         print(help_text)
+
+        print(f"Available tools: { [tool['function']['name'] for tool in self.tools] } ")
         
         while True:
             self.self_check()
-            self.show_all_messages()
+            self.log_all_messages()
             try:
                 query = input("\nQuery: ").strip()
                 if query.lower() == 'quit':
