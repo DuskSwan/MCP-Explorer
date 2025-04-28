@@ -87,7 +87,15 @@ class MyMCPClient:
         """
         # Store the context managers so they stay alive
         self._streams_contexts.append(sse_client(url=server_url))
-        streams = await self._streams_contexts[-1].__aenter__() # streams相当于(stdio, write)
+        try:
+            streams = await self._streams_contexts[-1].__aenter__() # streams相当于(stdio, write)
+        except Exception as e:
+            logger.error(f"Failed to connect to SSE server: {e}")
+            logger.error(f"Please check if the server is running at {server_url}")
+            print(f"**Failed to connect to SSE server: {e}**")
+            print(f"**Please check if the server is running at {server_url}**")
+            self._streams_contexts.pop()
+            return
 
         self._session_contexts.append(ClientSession(*streams))
         session: ClientSession = await self._session_contexts[-1].__aenter__()

@@ -137,16 +137,11 @@ def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlett
     )
 
 if __name__ == "__main__":
+    HOST = "0.0.0.0"
+    PORT = 8080
+
     mcp_server = mcp._mcp_server
-
-    parser = argparse.ArgumentParser(description='Run AlienCom MCP SSE-based server')
-    parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
-    parser.add_argument('--port', type=int, default=8080, help='Port to listen on')
-    args = parser.parse_args()
-
-    # 绑定SSE请求处理到MCP Server
     starlette_app = create_starlette_app(mcp_server, debug=True)
 
-    print(f"AlienCom 启动，监听 {args.host}:{args.port}")
-
-    uvicorn.run(starlette_app, host=args.host, port=args.port)
+    print(f"AlienCom 启动，监听 {HOST}:{PORT}")
+    uvicorn.run(starlette_app, host=HOST, port=PORT)
