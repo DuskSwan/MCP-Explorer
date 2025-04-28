@@ -113,7 +113,7 @@ def summon_alien(signal: str):
         return "外星人召唤失败！"
 
 # 创建Starlette应用
-def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlette:
+def create_starlette_app(mcp_server: Server) -> Starlette:
     sse = SseServerTransport("/messages/")
 
     async def handle_sse(request: Request) -> None:
@@ -129,7 +129,6 @@ def create_starlette_app(mcp_server: Server, *, debug: bool = False) -> Starlett
             )
 
     return Starlette(
-        debug=debug,
         routes=[
             Route("/sse", endpoint=handle_sse),
             Mount("/messages/", app=sse.handle_post_message),
@@ -144,4 +143,4 @@ if __name__ == "__main__":
     starlette_app = create_starlette_app(mcp_server, debug=True)
 
     print(f"AlienCom 启动，监听 {HOST}:{PORT}")
-    uvicorn.run(starlette_app, host=HOST, port=PORT)
+    uvicorn.run(starlette_app, host=HOST, port=PORT, lifespan="off")
