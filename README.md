@@ -22,8 +22,10 @@
   - Ollama: Ollama上可用的模型。
 
 - my_servers: 自己写的MCP Server脚本。
-  - timetools: 提供时间查询和时区转换功能。
+  - Timetools: 提供时间查询和时区转换功能。
   - Unsplash: 提供壁纸查询、壁纸下载和设置壁纸功能。
+  - BraveSearch: 提供网络搜索功能。
+  - AlienCom: 在服务器上召唤一个外星人。这是一个通过SSE方式连接MCP Server的示例。
 
 - client_examples: 自己写的MCP Client脚本。
   - stdio_client: 以stdio为输入输出方式，在本地启动服务脚本。
@@ -47,4 +49,4 @@ Unsplash是获取壁纸的工具，申请Unsplash的API key参见[这里](https:
 
 Brave search是一个搜索工具，申请API点击[这里](https://brave.com/search/api/)。
 
-Ollama用于本地部署大模型，并不需要API key，但为了符合OpenAI调用规则还是给一个字符串。
+Ollama用于本地部署大模型，并不需要API key，但为了符合OpenAI调用规则还是需要"ollama"作为key字符串。
