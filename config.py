@@ -27,16 +27,17 @@ _C.SERVER.ACCESS_PATHS = [
 ] 
 
 _C.HOST = CN()
-_C.HOST.MAX_MASSAGE_TURNS = 30 
-  # max turns of messages in the conversation
+_C.HOST.MAX_MASSAGE_TURNS = 20
+    # HOST所记录的message数目上限，由于每次都会将全部message传递给模型，所以过多的message会导致token数过多
+    # 注意，除了消息，工具调用也会被记录在message中，所以每新增一轮对话可能增加两条或更多message
 # _C.HOST.LOG_FILE = "" 
 _C.HOST.LOG_FILE = "logs/.log"
-  # log file name, or "" to print to console
+    # 日志保存路径, 留空则将日志输出到控制台
 _C.HOST.NEED_USER_CONFIRM = False 
-  # whether to need user confirm when using tools
+    # 调用工具时是否需要用户确认
 
 def get_cfg_defaults():
-  """Get a yacs CfgNode object with default values for my_project."""
-  # Return a clone so that the defaults will not be altered
-  # This is for the "local variable" use pattern
-  return _C.clone()
+    """Get a yacs CfgNode object with default values for my_project."""
+    # Return a clone so that the defaults will not be altered
+    # This is for the "local variable" use pattern
+    return _C.clone()

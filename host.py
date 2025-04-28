@@ -246,7 +246,7 @@ class MyMCPClient:
         """Check if everything is ok"""
         if len(self.messages) > self.cfg.HOST.MAX_MASSAGE_TURNS:
             logger.warning("Message length exceeds the limit. Cleaning up...")
-            self.clean_dialogue()
+            self.clean_dialogue(command="touch_max")
 
     async def chat_loop(self):
         """Run an interactive chat loop"""
@@ -275,7 +275,7 @@ class MyMCPClient:
                     break
                 if query.lower() == 'restart':
                     print("Restarting dialogue...")
-                    self.clean_dialogue()
+                    self.clean_dialogue(command="user_restart")
                     continue
                 if query.lower() == 'help':
                     print(help_text)
@@ -286,10 +286,14 @@ class MyMCPClient:
         
         print("\nExited.")
     
-    def clean_dialogue(self):
+    def clean_dialogue(self, command: str):
         """Clean up memory and restart dialogue"""
-        self.messages = self.init_messages.copy()
-        logger.info("Memory cleaned.")
+        if command == "user_restart":
+            self.messages = self.init_messages.copy()
+            logger.info("Memory cleaned.")
+        if command == "touch_max":
+            self.messages = self.messages[-self.cfg.HOST.MAX_MASSAGE_TURNS:]
+            logger.info("Memory touch max, auto clean.")
 
 async def main():
     cfg = get_cfg_defaults()
