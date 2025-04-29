@@ -25,6 +25,7 @@ model_info = {
     "DASHSCOPE": {"base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",},
     "GEMINI": {"base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",},
     "OLLAMA": {"base_url": "http://localhost:11434/v1",},
+    "HUNYUAN": {"base_url": "https://api.hunyuan.cloud.tencent.com/v1",},
 }
 
 class MyMCPClient:
@@ -251,7 +252,7 @@ class MyMCPClient:
     async def chat_loop(self):
         """Run an interactive chat loop"""
         logger.info("Starting chat loop. Model: {}".format(self.model_name))
-        print("\nMCP Client Started!")
+        print("\nMCP Client Started! (model: {})".format(self.model_name))
 
         help_text = """
         Type your queries or command

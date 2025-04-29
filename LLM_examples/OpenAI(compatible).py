@@ -101,6 +101,15 @@ ChatCompletion(
 )
 '''
 
+def hunyuan():
+    '''
+    Hunyuan系列模型的使用
+    获取API key见 https://cloud.tencent.com/document/product/1729/111008
+    模型价格见 https://cloud.tencent.com/document/product/1729/97731
+    官方使用示例见 https://cloud.tencent.com/document/product/1729/111007
+    '''
+    pass
+
 if __name__ == "__main__":
     qwen()
     # deepseek()

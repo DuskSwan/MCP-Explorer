@@ -8,8 +8,8 @@ _C.MODEL = CN()
 # _C.MODEL.NAME = "qwen2.5-3b-instruct" 
 # _C.MODEL.NAME = "qwen-max-latest"
 
-_C.MODEL.MARK = "DEEPSEEK"
-_C.MODEL.NAME = "deepseek-chat"
+# _C.MODEL.MARK = "DEEPSEEK"
+# _C.MODEL.NAME = "deepseek-chat"
 # _C.MODEL.NAME = "deepseek-reasoner" # 不支持tools调用
 
 # _C.MODEL.MARK = "GEMINI"
@@ -18,12 +18,15 @@ _C.MODEL.NAME = "deepseek-chat"
 # _C.MODEL.MARK = "OLLAMA"
 # _C.MODEL.NAME = "llama3.2"
 
+_C.MODEL.MARK = "HUNYUAN"
+_C.MODEL.NAME = "hunyuan-turbos-latest"
+
 _C.SERVER = CN()
 _C.SERVER.ACCESS_PATHS = [
     "D:/GitRepo/MCP-Explorer/my_servers/Timetools.py",
     "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
     "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
-    "http://localhost:8080/sse", # 使用SSE连接的server前必须先将其启动，并一直挂着
+    # "http://localhost:8080/sse", # 使用SSE连接的server前必须先将其启动，并一直挂着
 ] 
 
 _C.HOST = CN()
