@@ -1,18 +1,16 @@
 '''
 很多模型都提供了与 OpenAI 兼容的 API 格式，可以使用 OpenAI SDK 来访问，这需要的库是
 pip install openai
-
 '''
 
 import os
 from openai import OpenAI
-
 from dotenv import load_dotenv
 load_dotenv()
-DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+
 
 def deepseek():
+    DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
     client = OpenAI(
         api_key=DEEPSEEK_API_KEY, 
         base_url="https://api.deepseek.com"
@@ -37,6 +35,7 @@ def qwen():
     模型价格见 https://help.aliyun.com/zh/model-studio/models
     官方使用示例见 https://help.aliyun.com/zh/model-studio/text-generation?spm=a2c4g.11186623.0.0.190d1d1cfxiGi1#bfae0adf88aa2
     '''
+    DASHSCOPE_API_KEY = os.getenv("DASHSCOPE_API_KEY")
     try:
         client = OpenAI(
             api_key=DASHSCOPE_API_KEY,
@@ -56,8 +55,7 @@ def qwen():
         print(f"错误信息：{e}")
         print("请参考文档：https://help.aliyun.com/zh/model-studio/developer-reference/error-code")
 
-'''
-回复结构：
+'''回复结构：
 ChatCompletion(
     id='chatcmpl-47bdf91a-960b-94cc-a9d1-ce9ca1b1c086', 
     choices=[
@@ -104,7 +102,7 @@ ChatCompletion(
 def hunyuan():
     '''
     Hunyuan系列模型的使用
-    获取API key见 https://cloud.tencent.com/document/product/1729/111008
+    获取API key见 https://console.cloud.tencent.com/hunyuan/start
     模型价格见 https://cloud.tencent.com/document/product/1729/97731
     官方使用示例见 https://cloud.tencent.com/document/product/1729/111007
     '''

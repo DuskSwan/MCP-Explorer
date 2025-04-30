@@ -8,6 +8,8 @@ Gemini API 使用入门 https://ai.google.dev/gemini-api/docs/text-generation?hl
 ```bash
 pip install -q -U google-genai
 ```
+
+后来发现Gemini也支持openai SDK捏，完全没必要用它自己的库啊（
 '''
 
 from google import genai
