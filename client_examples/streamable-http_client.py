@@ -145,8 +145,8 @@ class MCPClient:
             #     print(f"\nError: {str(e)}")
 
 async def main():
-    localhost_port = 8081
-    server_url = f"http://localhost:{localhost_port}/mcp"
+    PORT = 8081
+    server_url = f"http://localhost:{PORT}/mcp"
         
     client = MCPClient()
     try:
