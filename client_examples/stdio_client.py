@@ -232,7 +232,6 @@ class MCPClient:
 
 async def main():
     if len(sys.argv) < 2:
-        # print("Usage: uv run client.py <URLs of SSE MCP servers separated by comma (i.e. http://localhost:8080/sse,http://localhost:8081/sse)>")
         print("Usage: python client.py <path to server script> ")
         sys.exit(1)
         

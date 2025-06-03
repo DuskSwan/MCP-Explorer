@@ -140,7 +140,7 @@ if __name__ == "__main__":
     PORT = 8080
 
     mcp_server = mcp._mcp_server
-    starlette_app = create_starlette_app(mcp_server, debug=True)
+    starlette_app = create_starlette_app(mcp_server)
 
     print(f"AlienCom 启动，监听 {HOST}:{PORT}")
     uvicorn.run(starlette_app, host=HOST, port=PORT, lifespan="off")

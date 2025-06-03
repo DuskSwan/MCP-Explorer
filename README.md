@@ -27,7 +27,7 @@
   - BraveSearch: 提供网络搜索功能。
   - AlienCom: 在服务器上召唤一个外星人。这是一个通过SSE方式连接MCP Server的示例。
 
-- client_examples: 自己写的MCP Client脚本。
+- client_examples: 自己写的MCP Client示例脚本。
   - stdio_client: 以stdio为输入输出方式，在本地启动服务脚本。
   - sse_client: 以sse为输入输出方式，通过指定的端口连接到已经启动的服务。想要试用的话，将my_servers/timetools中的运行方式由`run_server(mode='stdio')`改成`run_server(mode='sse', port=8000)`然后运行，再运行`uv run sse_client.py http://localhost:8000/sse`即可。
 
