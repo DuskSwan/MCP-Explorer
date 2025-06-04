@@ -13,7 +13,7 @@
 
 ## 结构说明
 
-- host.py: 自己搭建的MCP host，里面实际上是一个Client负责接入本地（将来或许支持远端）的Server。其配置文件为config.py，模型与一些功能选择需要通过修改config.py来进行。
+- host.py: 自己搭建的MCP host，里面实际上是一个Client负责接入本地（将来或许支持远端）的Server。其配置文件为config.py，模型与一些功能选择需要通过修改config.py来进行。该client只能接受stdio和streamable http类型的server。
 
 - LLM_examples: 各个模型的调用方法。
   - Gemini: Google Gemini系列模型。

@@ -10,6 +10,7 @@ from contextlib import AsyncExitStack
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from mcp.client.sse import sse_client
+from mcp.client.streamable_http import streamablehttp_client
 
 from openai import AsyncOpenAI
 from openai.types.chat.chat_completion_message import ChatCompletionMessage
@@ -61,8 +62,9 @@ class MyMCPClient:
         Connect to local MCP server by stdio or sse transport. Servers defined in config.py.
         """
         for server_command in self.cfg.SERVER.ACCESS_PATHS:
-            if server_command.startswith("http://localhost:"):
-                await self.connect_sse_servers(server_command)
+            if server_command.startswith("http"):
+                # await self.connect_sse_server(server_command)
+                await self.connect_to_streamable_http_server(server_command)
             else:
                 await self.connect_stdio_server(server_command)
         
@@ -80,7 +82,7 @@ class MyMCPClient:
         self.tools = available_tools
         
 
-    async def connect_sse_servers(self, server_url: str):
+    async def connect_sse_server(self, server_url: str):
         """
         Connect to a local MCP server using SSE transport
 
@@ -107,7 +109,37 @@ class MyMCPClient:
         logger.info(f"Connecting to sse server {server_url}")
         response = await session.list_tools()
         tools = response.tools
-        logger.info(f"\nConnected to server {server_url} with tools{[tool.name for tool in tools]}")
+        logger.info(f"Connected to server {server_url} with tools{[tool.name for tool in tools]}")
+    
+    async def connect_to_streamable_http_server(self, server_url: str):
+        """
+        Connect to a local MCP server using Streamable HTTP transport
+
+        Args:
+            server_url: url of the server (such as http://localhost:8080/mcp)
+        """
+        self._streams_contexts.append(streamablehttp_client(
+            url=server_url,
+        ))
+        try:
+            read_stream, write_stream, _ = await self._streams_contexts[-1].__aenter__()
+        except Exception as e:
+            logger.error(f"Failed to connect to Streamable HTTP server: {e}")
+            logger.error(f"Please check if the server is running at {server_url}")
+            print(f"**Failed to connect to Streamable HTTP server: {e}**")
+            print(f"**Please check if the server is running at {server_url}**")
+            self._streams_contexts.pop()
+            return
+        
+        self._session_contexts.append(ClientSession(read_stream, write_stream))
+        session: ClientSession = await self._session_contexts[-1].__aenter__()
+        self.sessions.append(session)
+        await session.initialize()
+
+        logger.info(f"Connecting to streamable HTTP server {server_url}")
+        response = await session.list_tools()
+        tools = response.tools
+        logger.info(f"Connected to server {server_url} with tools{[tool.name for tool in tools]}")
     
     async def connect_stdio_server(self, server_script_path: str):
         """
@@ -284,6 +316,7 @@ class MyMCPClient:
                 await self.process_query(query)
             except Exception as e:
                 print(f"\nError: {str(e)}")
+                await self.cleanup()
         
         print("\nExited.")
     

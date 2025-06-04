@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 from typing import Optional, List
 import asyncio
@@ -30,14 +29,14 @@ class MCPClient:
         self, server_url: str, headers: Optional[dict] = None
     ):
         """Connect to an MCP server running with HTTP Streamable transport"""
-        self._streams_context = streamablehttp_client(  # pylint: disable=W0201
+        self._streams_context = streamablehttp_client(
             url=server_url,
             headers=headers or {},
         )
-        read_stream, write_stream, _ = await self._streams_context.__aenter__()  # pylint: disable=E1101
+        read_stream, write_stream, _ = await self._streams_context.__aenter__()
 
-        self._session_context = ClientSession(read_stream, write_stream)  # pylint: disable=W0201
-        self.session: ClientSession = await self._session_context.__aenter__()  # pylint: disable=C2801
+        self._session_context = ClientSession(read_stream, write_stream)
+        self.session: ClientSession = await self._session_context.__aenter__()
 
         await self.session.initialize()
 
