@@ -13,10 +13,11 @@ from langchain_community.tools import BraveSearch
 import os
 from dotenv import load_dotenv
 load_dotenv()
-BRAVE_API_KEY = os.getenv("BRAVE_API_KEY")
+BRAVE_API_KEY = os.getenv("BRAVE_API_KEY") 
 
-from mcp.server.fastmcp import FastMCP
-mcp = FastMCP("wallpaper-server")
+# from mcp.server.fastmcp import FastMCP
+from fastmcp import FastMCP
+mcp = FastMCP("web-search-server")
 
 @mcp.tool()
 def brave_search(query: str, 
@@ -39,18 +40,19 @@ def brave_search(query: str,
         response: str, search result or error message. Search result is string of a list of dicts, each dict contains a web page result.
     '''
     try:
-        response = search_query(query, 
-                                country=country,
-                                search_lang=search_lang,
-                                count=count,
-                                safesearch=safesearch,
-                               )
+        response = search_query(
+            query, 
+            country=country,
+            search_lang=search_lang,
+            count=count,
+            safesearch=safesearch,
+        )
         return response
     except Exception as e:
         return f"Error: {e}"
 
 
-def search_query(query, country="ALL", search_lang="en", count=3, safesearch="off", show_results=False):
+def search_query(query, country="ALL", search_lang="en", count=3, safesearch="off", show_results=True):
     params = {
         "country": country,
         "search_lang": search_lang,
@@ -91,5 +93,10 @@ def test():
     # print(zhres)
 
 if __name__ == "__main__":
-    mcp.run(transport='stdio')
+    mcp.run(
+        transport="streamable-http",
+        host="0.0.0.0",
+        port=8888,
+        path="/mcp",
+    )
     # test()

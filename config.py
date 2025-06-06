@@ -25,9 +25,9 @@ _C.SERVER = CN()
 _C.SERVER.ACCESS_PATHS = [
     "D:/GitRepo/MCP-Explorer/my_servers/Timetools.py",
     "D:/GitRepo/MCP-Explorer/my_servers/Unsplash.py",
-    "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
+    # "D:/GitRepo/MCP-Explorer/my_servers/BraveSearch.py",
     # "http://localhost:8080/sse", # 使用SSE连接的server前必须先将其启动，并一直挂着
-    "http://localhost:8081/mcp", # 使用Streamable HTTP连接的server可以在需要时启动，使用后可以关闭
+    # "http://localhost:8081/mcp", # 使用Streamable HTTP连接的server可以在需要时启动，使用后可以关闭
 ] 
 
 _C.HOST = CN()

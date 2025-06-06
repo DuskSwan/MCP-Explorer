@@ -153,10 +153,20 @@ class MyMCPClient:
             logger.error("Server script must be a .py , but got: {}".format(server_script_path))
             return
 
-        command = "python"
+        # command = "python"
+        # server_params = StdioServerParameters(
+        #     command=command,
+        #     args=[server_script_path],
+        #     env=None
+        # )
+
+        command = "uv"
         server_params = StdioServerParameters(
             command=command,
-            args=[server_script_path],
+            args=[
+                "run",
+                server_script_path,
+            ],
             env=None
         )
         

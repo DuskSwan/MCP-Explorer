@@ -1,27 +1,11 @@
-import argparse
+from loguru import logger
 
-from mcp.server.fastmcp import FastMCP
-from mcp.server.sse import SseServerTransport
-from mcp.server import Server
-
-from starlette.applications import Starlette
-from starlette.requests import Request
-from starlette.routing import Mount, Route
-
-import logging
-import uvicorn
+from fastmcp import FastMCP
 
 from datetime import datetime
 import pytz
 
-MCP_SERVER_NAME = "time_mcp_server"
-
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(MCP_SERVER_NAME)
-
-mcp = FastMCP(MCP_SERVER_NAME)
+mcp = FastMCP("time_mcp_server")
 
 @mcp.tool()
 def get_current_time():
@@ -69,48 +53,11 @@ def transform_timezone(source_time: str, timezone: str) -> str:
     return target_time_str
     
 
-def create_starlette_app(mcp_server: Server) -> Starlette:
-    """Create a Starlette application that can server the provied mcp server with SSE."""
-    sse = SseServerTransport("/messages/")
-
-    async def handle_sse(request: Request) -> None:
-        async with sse.connect_sse(
-                request.scope,
-                request.receive,
-                request._send,
-        ) as (read_stream, write_stream):
-            await mcp_server.run(
-                read_stream,
-                write_stream,
-                mcp_server.create_initialization_options(),
-            )
-
-    return Starlette(
-        routes=[
-            Route("/sse", endpoint=handle_sse),
-            Mount("/messages/", app=sse.handle_post_message),
-        ],
-    )
-
-def run_server(mode='stdio', port=8000):
-    """Run the MCP server."""
-    if mode == 'stdio':
-        mcp.run(transport="stdio")
-    elif mode == 'sse':
-        mcp_server = mcp._mcp_server
-
-        print(f"Starting SSE server on port {port}...")
-
-        parser = argparse.ArgumentParser(description='Run MCP SSE-based server')
-        parser.add_argument('--host', default='0.0.0.0', help='Host to bind to')
-        parser.add_argument('--port', type=int, default=port, help='Port to listen on')
-        args = parser.parse_args()
-
-        # Bind SSE request handling to MCP server
-        starlette_app = create_starlette_app(mcp_server)
-
-        uvicorn.run(starlette_app, host=args.host, port=args.port)
-
 if __name__ == "__main__":
-    # run_server(mode='sse', port=8000)
-    run_server(mode='stdio')
+    # mcp.run(
+    #     transport="sse",
+    #     host="0.0.0.0",
+    #     port=8000,
+    #     path='/mcp',
+    # )
+    mcp.run(transport="stdio")
